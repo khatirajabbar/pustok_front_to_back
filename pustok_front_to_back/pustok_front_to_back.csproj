@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\Migrations\" />
+      <Folder Include="Models\ViewModels\" />
+      <Folder Include="Views\Admin\" />
+      <Folder Include="wwwroot\sliders\" />
+      <Folder Include="wwwroot\uploads\authors\" />
+      <Folder Include="wwwroot\uploads\products\" />
+      <Folder Include="wwwroot\uploads\sliders\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-brands-400.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-brands-400.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-brands-400.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-brands-400.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-brands-400.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-brands-400d41d.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-regular-400.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-regular-400.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-regular-400.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-regular-400.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-regular-400.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-regular-400d41d.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-solid-900.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-solid-900.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-solid-900.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-solid-900.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-solid-900.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\fa-solid-900d41d.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\Ionicons28b5.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\Ionicons28b5.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\Ionicons28b5.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\Ionicons28b5.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\Material-Design-Iconic-Fontd1f1.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\Material-Design-Iconic-Fontd1f1.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\fonts\Material-Design-Iconic-Fontd1f1.woff2" />
+    </ItemGroup>
+
+</Project>
