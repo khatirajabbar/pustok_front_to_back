@@ -6,6 +6,8 @@ public interface IProductService
     Task<List<Product>> GetFeaturedProductsAsync();
     Task<List<Product>> GetNewArrivalsAsync();
     Task<List<Product>> GetMostViewedProductsAsync();
+    Task<List<Product>> GetProductsByAuthorAsync(Guid authorId);
+    Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId);
     Task<Product> GetProductByIdAsync(Guid id);
     Task<Product> CreateProductAsync(Product product);
     Task<Product> UpdateProductAsync(Product product);

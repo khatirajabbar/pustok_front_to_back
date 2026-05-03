@@ -1,8 +1,206 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model pustok_front_to_back.Controllers.HomeViewModel
+@{
+    ViewData["Title"] = "Home - Pustok Book Store";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Hero Slider Section -->
+<section class="hero-area hero-slider-1">
+    <div class="sb-slick-slider" data-slick-setting='{"autoplay": true, "fade": true, "autoplaySpeed": 3000, "speed": 3000, "slidesToShow": 1, "dots":true}'>
+        @foreach (var slider in Model.Sliders)
+        {
+            <div class="single-slide" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="container">
+                    <div class="home-content text-center text-sm-left position-relative">
+                        @if (!string.IsNullOrEmpty(slider.Image))
+                        {
+                            <div class="hero-partial-image image-right">
+                                <img src="~/@slider.Image" alt="@slider.Title" style="max-width: 300px;">
+                            </div>
+                        }
+                        <div class="row g-0">
+                            <div class="col-xl-6 col-md-6 col-sm-7">
+                                <div class="home-content-inner content-left-side text-start">
+                                    <h1 style="color: white; font-size: 2.5rem;">@slider.Title</h1>
+                                    <h2 style="color: #e0e0e0;">@slider.Description</h2>
+                                    @if (!string.IsNullOrEmpty(slider.ButtonLink))
+                                    {
+                                        <a href="@slider.ButtonLink" class="btn btn-outlined--primary" style="background: white; color: #667eea;">
+                                            @slider.ButtonText
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="mb--30">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mt--30">
+                <div class="feature-box h-100">
+                    <div class="icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <div class="text">
+                        <h5>Free Shipping</h5>
+                        <p>Orders over $500</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mt--30">
+                <div class="feature-box h-100">
+                    <div class="icon">
+                        <i class="fas fa-redo-alt"></i>
+                    </div>
+                    <div class="text">
+                        <h5>Money Back Guarantee</h5>
+                        <p>100% money back</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mt--30">
+                <div class="feature-box h-100">
+                    <div class="icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="text">
+                        <h5>Cash On Delivery</h5>
+                        <p>Available in all areas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mt--30">
+                <div class="feature-box h-100">
+                    <div class="icon">
+                        <i class="fas fa-life-ring"></i>
+                    </div>
+                    <div class="text">
+                        <h5>Help & Support</h5>
+                        <p>Call us: +01-202-555-0181</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products Tab Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="sb-custom-tab">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="featured-tab" data-bs-toggle="tab" href="#featured" role="tab">Featured Products</a>
+                    <span class="arrow-icon"></span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="arrivals-tab" data-bs-toggle="tab" href="#arrivals" role="tab">New Arrivals</a>
+                    <span class="arrow-icon"></span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="viewed-tab" data-bs-toggle="tab" href="#viewed" role="tab">Most Viewed</a>
+                    <span class="arrow-icon"></span>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!-- Featured Products Tab -->
+                <div class="tab-pane show active" id="featured" role="tabpanel">
+                    <div class="row">
+                        @foreach (var product in Model.FeaturedProducts)
+                        {
+                            <div class="col-lg-3 col-md-6 col-sm-6 mb--30">
+                                <div class="product-card">
+                                    <div class="product-header">
+                                        <a href="#" class="author">@product.Author?.Name</a>
+                                        <h3><a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@product.Id">@product.Title</a></h3>
+                                    </div>
+                                    <div class="product-card--body">
+                                        <div class="card-image">
+                                            <img src="~/@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
+                                            <div class="hover-contents">
+                                                <div class="hover-btns">
+                                                    <a href="#" class="single-btn"><i class="fas fa-shopping-basket"></i></a>
+                                                    <a href="#" class="single-btn"><i class="fas fa-heart"></i></a>
+                                                    <a href="#" class="single-btn"><i class="fas fa-eye"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="price-block">
+                                            @if (product.IsOnSale && product.SalePrice.HasValue)
+                                            {
+                                                <span class="price">£@product.SalePrice.Value.ToString("F2")</span>
+                                                <del class="price-old">£@product.Price.ToString("F2")</del>
+                                                <span class="price-discount">@((int)((product.Price - product.SalePrice.Value) / product.Price * 100))%</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="price">£@product.Price.ToString("F2")</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- New Arrivals Tab -->
+                <div class="tab-pane" id="arrivals" role="tabpanel">
+                    <div class="row">
+                        @foreach (var product in Model.NewArrivals)
+                        {
+                            <div class="col-lg-3 col-md-6 col-sm-6 mb--30">
+                                <div class="product-card">
+                                    <div class="product-header">
+                                        <a href="#" class="author">@product.Author?.Name</a>
+                                        <h3><a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@product.Id">@product.Title</a></h3>
+                                    </div>
+                                    <div class="product-card--body">
+                                        <div class="card-image">
+                                            <img src="~/@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
+                                        </div>
+                                        <div class="price-block">
+                                            <span class="price">£@product.Price.ToString("F2")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Most Viewed Tab -->
+                <div class="tab-pane" id="viewed" role="tabpanel">
+                    <div class="row">
+                        @foreach (var product in Model.MostViewedProducts)
+                        {
+                            <div class="col-lg-3 col-md-6 col-sm-6 mb--30">
+                                <div class="product-card">
+                                    <div class="product-header">
+                                        <a href="#" class="author">@product.Author?.Name</a>
+                                        <h3><a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@product.Id">@product.Title</a></h3>
+                                    </div>
+                                    <div class="product-card--body">
+                                        <div class="card-image">
+                                            <img src="~/@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
+                                        </div>
+                                        <div class="price-block">
+                                            <span class="price">£@product.Price.ToString("F2")</span>
+                                            <small class="text-muted">Views: @product.ViewCount</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

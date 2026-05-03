@@ -1,0 +1,77 @@
+@model pustok_front_to_back.Controllers.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row mb--30">
+        <div class="col-12">
+            <h1>Admin Dashboard</h1>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb--30">
+        <div class="col-lg-3 col-md-6 mb--20">
+            <div class="stat-card bg-primary text-white p--20" style="border-radius: 8px;">
+                <h3>@Model.TotalProducts</h3>
+                <p>Total Products</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb--20">
+            <div class="stat-card bg-success text-white p--20" style="border-radius: 8px;">
+                <h3>@Model.TotalAuthors</h3>
+                <p>Total Authors</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb--20">
+            <div class="stat-card bg-info text-white p--20" style="border-radius: 8px;">
+                <h3>@Model.TotalCategories</h3>
+                <p>Total Categories</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb--20">
+            <div class="stat-card bg-warning text-white p--20" style="border-radius: 8px;">
+                <h3>@Model.TotalSliders</h3>
+                <p>Active Sliders</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Sections -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Management Options</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb--20">
+                            <a asp-controller="Admin" asp-action="Authors" class="btn btn-primary btn-block">
+                                <i class="fas fa-users"></i> Manage Authors
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb--20">
+                            <a asp-controller="Admin" asp-action="Categories" class="btn btn-info btn-block">
+                                <i class="fas fa-folder"></i> Manage Categories
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb--20">
+                            <a asp-controller="Admin" asp-action="Products" class="btn btn-success btn-block">
+                                <i class="fas fa-book"></i> Manage Products
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb--20">
+                            <a asp-controller="Admin" asp-action="Sliders" class="btn btn-warning btn-block">
+                                <i class="fas fa-images"></i> Manage Sliders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

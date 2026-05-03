@@ -40,10 +40,6 @@ public class CategoryService : ICategoryService
         if (category == null)
             throw new ArgumentNullException(nameof(category));
 
-        var existingCategory = await GetCategoryByIdAsync(category.Id);
-        if (existingCategory == null)
-            throw new InvalidOperationException($"Category with ID {category.Id} not found");
-
         category.UpdatedAt = DateTime.UtcNow;
         _context.Categories.Update(category);
         await _context.SaveChangesAsync();
@@ -56,9 +52,7 @@ public class CategoryService : ICategoryService
         if (category != null)
         {
             category.IsDeleted = true;
-            category.UpdatedAt = DateTime.UtcNow;
-            _context.Categories.Update(category);
-            await _context.SaveChangesAsync();
+            await UpdateCategoryAsync(category);
         }
     }
 }

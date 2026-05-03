@@ -1,50 +1,127 @@
-﻿<!DOCTYPE html>
+﻿@{
+    ViewData["Title"] = "Pustok - Book Store";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - pustok_front_to_back</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/pustok_front_to_back.styles.css" asp-append-version="true"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="~/css/plugins.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="~/css/main.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/image/favicon.ico">
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">pustok_front_to_back</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
+    <div class="site-wrapper" id="top">
+        <!-- Header Start -->
+        <div class="site-header d-none d-lg-block">
+            <div class="header-middle pt--10 pb--10">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-3">
+                            <a href="/" class="site-brand">
+                                <img src="~/image/logo.png" alt="Pustok">
+                            </a>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="header-phone">
+                                <div class="icon">
+                                    <i class="fas fa-headphones-alt"></i>
+                                </div>
+                                <div class="text">
+                                    <p>Free Support 24/7</p>
+                                    <p class="font-weight-bold number">+01-202-555-0181</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="main-navigation flex-lg-right">
+                                <ul class="main-menu menu-right">
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0)">Shop <i class="fas fa-chevron-down dropdown-arrow"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a asp-controller="Home" asp-action="Shop">All Products</a></li>
+                                            <li><a asp-controller="Home" asp-action="Shop">Featured</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Home" asp-action="Index">Home</a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="#">Contact</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-bottom pb--10">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-5">
+                            <form asp-controller="Home" asp-action="Search" method="post" class="header-search-block">
+                                <input type="text" name="query" placeholder="Search entire store here">
+                                <button type="submit">Search</button>
+                            </form>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="main-navigation flex-lg-right">
+                                <div class="cart-widget">
+                                    <div class="login-block">
+                                        <a href="/admin/dashboard" class="font-weight-bold">Admin</a> <br>
+                                        <span>or</span><a href="#">Account</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
+        <!-- Header End -->
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2026 - pustok_front_to_back - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <!-- Main Content -->
+        <main role="main" class="pb--30 pt--30">
+            @RenderBody()
+        </main>
+
+        <!-- Footer Start -->
+        <footer class="footer-area section-padding bg-light-gray">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb--30">
+                        <h4 class="footer-title">About Pustok</h4>
+                        <p>Your ultimate online bookstore offering the best collection of books across all genres.</p>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb--30">
+                        <h4 class="footer-title">Quick Links</h4>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/home/shop">Shop</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb--30">
+                        <h4 class="footer-title">Contact Info</h4>
+                        <p>Email: info@pustok.com</p>
+                        <p>Phone: +01-202-555-0181</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p>&copy; 2026 Pustok. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
     </div>
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+
+    <script src="~/js/plugins.js"></script>
+    <script src="~/js/custom.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

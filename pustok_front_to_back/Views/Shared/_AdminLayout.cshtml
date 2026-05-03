@@ -1,22 +1,143 @@
+@{
+    ViewData["Title"] = ViewData["Title"] ?? "Admin Panel";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewData["Title"] - Admin Panel</title>
-    <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/plugins.css" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        .admin-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
+            left: 0;
+            top: 0;
+            color: white;
+        }
+        .admin-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-menu li {
+            padding: 0;
+        }
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-left: 4px solid transparent;
+        }
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #fff;
+        }
+        .admin-header {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 15px;
+        }
+        .card-body, .p--30 {
+            padding: 30px;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: bold;
+        }
+        .stat-card p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead {
+            font-weight: 600;
+        }
+        .me--10 {
+            margin-right: 10px;
+        }
+        .mb--20 {
+            margin-bottom: 20px;
+        }
+        .mb--30 {
+            margin-bottom: 30px;
+        }
+        .mt--20 {
+            margin-top: 20px;
+        }
+        .p--20 {
+            padding: 20px;
+        }
+        .mb--10 {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-<div class="admin-layout">
-    <header>
-        <h1>Admin Panel</h1>
-    </header>
-    <main>
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header p--20 mb--20" style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2);">
+            <h2 style="margin: 0; font-size: 1.5rem;">Pustok Admin</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/admin/dashboard"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="/admin/products"><i class="fas fa-book"></i> Products</a></li>
+            <li><a href="/admin/authors"><i class="fas fa-users"></i> Authors</a></li>
+            <li><a href="/admin/categories"><i class="fas fa-folder"></i> Categories</a></li>
+            <li><a href="/admin/sliders"><i class="fas fa-images"></i> Sliders</a></li>
+            <li><a href="/"><i class="fas fa-home"></i> View Site</a></li>
+        </ul>
+    </aside>
+
+    <!-- Content -->
+    <div class="admin-content">
         @RenderBody()
-    </main>
-</div>
-<script src="~/js/plugins.js"></script>
-<script src="~/js/custom.js"></script>
+    </div>
+
+    <script src="~/js/plugins.js"></script>
+    <script src="~/js/custom.js"></script>
 </body>
 </html>

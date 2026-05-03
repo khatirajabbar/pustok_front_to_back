@@ -52,6 +52,25 @@ public class ProductService : IProductService
             .ToListAsync();
     }
 
+    public async Task<List<Product>> GetProductsByAuthorAsync(Guid authorId)
+    {
+        return await _context.Products
+            .Where(p => !p.IsDeleted && p.AuthorId == authorId)
+            .Include(p => p.Category)
+            .Include(p => p.Author)
+            .Take(6)
+            .ToListAsync();
+    }
+
+    public async Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId)
+    {
+        return await _context.Products
+            .Where(p => !p.IsDeleted && p.CategoryId == categoryId)
+            .Include(p => p.Category)
+            .Include(p => p.Author)
+            .ToListAsync();
+    }
+
     public async Task<Product> GetProductByIdAsync(Guid id)
     {
         return await _context.Products

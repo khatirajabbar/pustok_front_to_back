@@ -1,0 +1,88 @@
+@model pustok_front_to_back.Controllers.ShopViewModel
+@{
+    ViewData["Title"] = "Shop - Pustok";
+}
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-md-4">
+                <div class="sidebar">
+                    <!-- Categories Filter -->
+                    <div class="sidebar-widget mb--30">
+                        <h3 class="sidebar-title">Categories</h3>
+                        <ul class="category-list">
+                            @foreach (var category in Model.Categories)
+                            {
+                                <li>
+                                    <a href="@Url.Action("Shop", "Home", new { categoryId = category.Id })">@category.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="sidebar-widget mb--30">
+                        <h3 class="sidebar-title">Search</h3>
+                        <form asp-controller="Home" asp-action="Shop" method="get">
+                            <input type="text" name="query" placeholder="Search products..." class="form-control">
+                            <button type="submit" class="btn btn-primary mt--10">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="col-lg-9 col-md-8">
+                <div class="products-header mb--30">
+                    <h2>All Products</h2>
+                    <p>Showing @Model.Products.Count() results</p>
+                </div>
+
+                <div class="row">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-lg-4 col-md-6 col-sm-6 mb--30">
+                            <div class="product-card">
+                                <div class="product-header">
+                                    <a href="#" class="author">@product.Author?.Name</a>
+                                    <h3><a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@product.Id">@product.Title</a></h3>
+                                </div>
+                                <div class="product-card--body">
+                                    <div class="card-image">
+                                        <img src="~/@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
+                                        <div class="hover-contents">
+                                            <div class="hover-btns">
+                                                <a href="#" class="single-btn"><i class="fas fa-shopping-basket"></i></a>
+                                                <a href="#" class="single-btn"><i class="fas fa-heart"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="price-block">
+                                        @if (product.IsOnSale && product.SalePrice.HasValue)
+                                        {
+                                            <span class="price">£@product.SalePrice.Value.ToString("F2")</span>
+                                            <del class="price-old">£@product.Price.ToString("F2")</del>
+                                        }
+                                        else
+                                        {
+                                            <span class="price">£@product.Price.ToString("F2")</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @if (!Model.Products.Any())
+                {
+                    <div class="alert alert-info text-center">
+                        <p>No products found. Try a different search or category.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

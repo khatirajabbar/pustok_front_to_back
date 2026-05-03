@@ -39,12 +39,6 @@ public class SliderService : ISliderService
         if (slider == null)
             throw new ArgumentNullException(nameof(slider));
 
-        if (string.IsNullOrWhiteSpace(slider.Title))
-            throw new ArgumentException("Slider title is required");
-
-        if (string.IsNullOrWhiteSpace(slider.Image))
-            throw new ArgumentException("Slider image is required");
-
         _context.Sliders.Add(slider);
         await _context.SaveChangesAsync();
         return slider;
@@ -54,10 +48,6 @@ public class SliderService : ISliderService
     {
         if (slider == null)
             throw new ArgumentNullException(nameof(slider));
-
-        var existingSlider = await GetSliderByIdAsync(slider.Id);
-        if (existingSlider == null)
-            throw new InvalidOperationException($"Slider with ID {slider.Id} not found");
 
         slider.UpdatedAt = DateTime.UtcNow;
         _context.Sliders.Update(slider);
@@ -71,9 +61,7 @@ public class SliderService : ISliderService
         if (slider != null)
         {
             slider.IsDeleted = true;
-            slider.UpdatedAt = DateTime.UtcNow;
-            _context.Sliders.Update(slider);
-            await _context.SaveChangesAsync();
+            await UpdateSliderAsync(slider);
         }
     }
 }

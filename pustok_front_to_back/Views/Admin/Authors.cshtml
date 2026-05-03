@@ -1,0 +1,82 @@
+@model List<Author>
+@{
+    ViewData["Title"] = "Manage Authors";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row mb--30">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Authors Management</h1>
+                <a asp-controller="Admin" asp-action="CreateAuthor" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add New Author
+                </a>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Profile Image</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var author in Model)
+                    {
+                        <tr>
+                            <td>@author.Name</td>
+                            <td>@author.Email</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(author.ProfileImage))
+                                {
+                                    <img src="~/@author.ProfileImage" alt="@author.Name" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                }
+                            </td>
+                            <td>@author.CreatedAt.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <a asp-controller="Admin" asp-action="EditAuthor" asp-route-id="@author.Id" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-controller="Admin" asp-action="DeleteAuthor" asp-route-id="@author.Id" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center mt--20">
+            <p>No authors found. <a asp-controller="Admin" asp-action="CreateAuthor">Create one now</a></p>
+        </div>
+    }
+</div>

@@ -8,8 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Migrations\" />
-      <Folder Include="Models\ViewModels\" />
-      <Folder Include="Views\Admin\" />
       <Folder Include="wwwroot\sliders\" />
       <Folder Include="wwwroot\uploads\authors\" />
       <Folder Include="wwwroot\uploads\products\" />

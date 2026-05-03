@@ -30,9 +30,6 @@ public class AuthorService : IAuthorService
         if (author == null)
             throw new ArgumentNullException(nameof(author));
 
-        if (string.IsNullOrWhiteSpace(author.Name))
-            throw new ArgumentException("Author name is required");
-
         _context.Authors.Add(author);
         await _context.SaveChangesAsync();
         return author;
@@ -42,10 +39,6 @@ public class AuthorService : IAuthorService
     {
         if (author == null)
             throw new ArgumentNullException(nameof(author));
-
-        var existingAuthor = await GetAuthorByIdAsync(author.Id);
-        if (existingAuthor == null)
-            throw new InvalidOperationException($"Author with ID {author.Id} not found");
 
         author.UpdatedAt = DateTime.UtcNow;
         _context.Authors.Update(author);
@@ -59,9 +52,7 @@ public class AuthorService : IAuthorService
         if (author != null)
         {
             author.IsDeleted = true;
-            author.UpdatedAt = DateTime.UtcNow;
-            _context.Authors.Update(author);
-            await _context.SaveChangesAsync();
+            await UpdateAuthorAsync(author);
         }
     }
 }
