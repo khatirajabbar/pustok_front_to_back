@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using pustok_front_to_back.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using pustok_front_to_back.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace pustok_front_to_back.Controllers;
 
@@ -10,19 +13,22 @@ public class AdminController : Controller
     private readonly ISliderService _sliderService;
     private readonly ICategoryService _categoryService;
     private readonly IFileUploadService _fileUploadService;
+    private readonly UserManager<User> _userManager;
 
     public AdminController(
         IProductService productService,
         IAuthorService authorService,
         ISliderService sliderService,
         ICategoryService categoryService,
-        IFileUploadService fileUploadService)
+        IFileUploadService fileUploadService,
+        UserManager<User> userManager)
     {
         _productService = productService;
         _authorService = authorService;
         _sliderService = sliderService;
         _categoryService = categoryService;
         _fileUploadService = fileUploadService;
+        _userManager = userManager;
     }
 
     // DASHBOARD
@@ -383,6 +389,60 @@ public class AdminController : Controller
         }
 
         return RedirectToAction(nameof(Products));
+    }
+
+    // ============ USER MANAGEMENT ============
+
+    [Authorize]
+    public async Task<IActionResult> Users()
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+        
+        if (currentUser?.Role != "Admin")
+            return Unauthorized();
+
+        var allUsers = _userManager.Users.Where(u => !u.IsDeleted).ToList();
+        return View(allUsers);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> DeleteUser(Guid userId)
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+        
+        if (currentUser?.Role != "Admin")
+            return Unauthorized();
+
+        var userToDelete = await _userManager.FindByIdAsync(userId.ToString());
+        if (userToDelete == null)
+            return NotFound();
+
+        userToDelete.IsDeleted = true;
+        await _userManager.UpdateAsync(userToDelete);
+
+        TempData["Success"] = "User deleted successfully";
+        return RedirectToAction("Users");
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> ChangeRole(Guid userId, string newRole)
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+        
+        if (currentUser?.Role != "Admin")
+            return Unauthorized();
+
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            return NotFound();
+
+        user.Role = newRole; // "User" or "Admin"
+        await _userManager.UpdateAsync(user);
+
+        TempData["Success"] = $"User role changed to {newRole}";
+        return RedirectToAction("Users");
     }
 }
 

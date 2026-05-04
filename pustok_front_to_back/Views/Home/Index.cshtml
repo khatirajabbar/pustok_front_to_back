@@ -14,7 +14,7 @@
                         @if (!string.IsNullOrEmpty(slider.Image))
                         {
                             <div class="hero-partial-image image-right">
-                                <img src="~/@slider.Image" alt="@slider.Title" style="max-width: 300px;">
+                                <img src="@slider.Image" alt="@slider.Title" style="max-width: 300px;">
                             </div>
                         }
                         <div class="row g-0">
@@ -122,7 +122,7 @@
                                     </div>
                                     <div class="product-card--body">
                                         <div class="card-image">
-                                            <img src="~/@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
+                                            <img src="@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
                                             <div class="hover-contents">
                                                 <div class="hover-btns">
                                                     <a href="#" class="single-btn"><i class="fas fa-shopping-basket"></i></a>
@@ -163,7 +163,7 @@
                                     </div>
                                     <div class="product-card--body">
                                         <div class="card-image">
-                                            <img src="~/@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
+                                            <img src="@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
                                         </div>
                                         <div class="price-block">
                                             <span class="price">£@product.Price.ToString("F2")</span>
@@ -188,7 +188,7 @@
                                     </div>
                                     <div class="product-card--body">
                                         <div class="card-image">
-                                            <img src="~/@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
+                                            <img src="@product.Image" alt="@product.Title" style="height: 300px; object-fit: cover;">
                                         </div>
                                         <div class="price-block">
                                             <span class="price">£@product.Price.ToString("F2")</span>
@@ -203,4 +203,4 @@
             </div>
         </div>
     </div>
-</section>
+</section>/

@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Author> Authors { get; set; }
     public DbSet<Slider> Sliders { get; set; }
     public DbSet<Product> Products { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

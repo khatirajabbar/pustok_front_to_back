@@ -24,6 +24,7 @@ public class Product : AuditableEntity
     public int ViewCount { get; set; } = 0;
     public bool IsOnSale { get; set; } = false;
     public decimal? SalePrice { get; set; }
+    public bool IsFeatured { get; set; } = false;
 
     public string Sku { get; set; }
     public int Stock { get; set; } = 0;
