@@ -70,8 +70,16 @@
                             <div class="main-navigation flex-lg-right">
                                 <div class="cart-widget">
                                     <div class="login-block">
-                                        <a href="/admin/dashboard" class="font-weight-bold">Admin</a> <br>
-                                        <span>or</span><a href="#">Account</a>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <span>Welcome, @User.Identity.Name</span> <br>
+                                            <a href="/auth/logout" class="font-weight-bold">Logout</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Auth" asp-action="Login" class="font-weight-bold">Login</a> <br>
+                                            <span>or</span> <a asp-controller="Auth" asp-action="Register">Register</a>
+                                        }
                                     </div>
                                 </div>
                             </div>

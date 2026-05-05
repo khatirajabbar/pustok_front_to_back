@@ -1,11 +1,37 @@
 using pustok_front_to_back.Models.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace pustok_front_to_back.Data;
 
 public static class DbInitializer
 {
-    public static void Initialize(AppDbContext context)
+    public static async Task InitializeAsync(AppDbContext context, UserManager<User> userManager)
     {
+        // Create admin user if it doesn't exist
+        var adminEmail = "admin@pustok.com";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+        
+        if (adminUser == null)
+        {
+            adminUser = new User
+            {
+                FirstName = "Admin",
+                LastName = "User",
+                Email = adminEmail,
+                UserName = adminEmail,
+                IsEmailVerified = true,
+                Role = "Admin",
+                CreatedAt = DateTime.Now,
+                IsDeleted = false
+            };
+
+            var result = await userManager.CreateAsync(adminUser, "Admin@123");
+            if (!result.Succeeded)
+            {
+                throw new Exception($"Failed to create admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            }
+        }
+
         // Check if database has any data already
         if (context.Categories.Any() || context.Authors.Any() || context.Products.Any())
         {

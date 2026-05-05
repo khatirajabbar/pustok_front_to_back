@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace pustok_front_to_back.Controllers;
 
+[Authorize]
 public class AdminController : Controller
 {
     private readonly IProductService _productService;
@@ -393,11 +394,10 @@ public class AdminController : Controller
 
     // ============ USER MANAGEMENT ============
 
-    [Authorize]
     public async Task<IActionResult> Users()
     {
         var currentUser = await _userManager.GetUserAsync(User);
-        
+
         if (currentUser?.Role != "Admin")
             return Unauthorized();
 
@@ -405,12 +405,118 @@ public class AdminController : Controller
         return View(allUsers);
     }
 
-    [Authorize]
+    public async Task<IActionResult> CreateUser()
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        if (currentUser?.Role != "Admin")
+            return Unauthorized();
+
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateUser(CreateUserViewModel model)
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        if (currentUser?.Role != "Admin")
+            return Unauthorized();
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = new User
+        {
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Email = model.Email,
+            UserName = model.Email,
+            IsEmailVerified = true,
+            Role = model.Role,
+            CreatedAt = DateTime.Now,
+            IsDeleted = false
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+
+        if (result.Succeeded)
+        {
+            TempData["Success"] = "User created successfully!";
+            return RedirectToAction(nameof(Users));
+        }
+
+        foreach (var error in result.Errors)
+            ModelState.AddModelError("", error.Description);
+
+        return View(model);
+    }
+
+    public async Task<IActionResult> EditUser(Guid id)
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        if (currentUser?.Role != "Admin")
+            return Unauthorized();
+
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user == null)
+            return NotFound();
+
+        var model = new EditUserViewModel
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Role = user.Role,
+            IsEmailVerified = user.IsEmailVerified
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditUser(EditUserViewModel model)
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        if (currentUser?.Role != "Admin")
+            return Unauthorized();
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _userManager.FindByIdAsync(model.Id.ToString());
+        if (user == null)
+            return NotFound();
+
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+        user.Email = model.Email;
+        user.UserName = model.Email;
+        user.Role = model.Role;
+        user.IsEmailVerified = model.IsEmailVerified;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            TempData["Success"] = "User updated successfully!";
+            return RedirectToAction(nameof(Users));
+        }
+
+        foreach (var error in result.Errors)
+            ModelState.AddModelError("", error.Description);
+
+        return View(model);
+    }
+
     [HttpPost]
     public async Task<IActionResult> DeleteUser(Guid userId)
     {
         var currentUser = await _userManager.GetUserAsync(User);
-        
+
         if (currentUser?.Role != "Admin")
             return Unauthorized();
 
@@ -425,12 +531,11 @@ public class AdminController : Controller
         return RedirectToAction("Users");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> ChangeRole(Guid userId, string newRole)
     {
         var currentUser = await _userManager.GetUserAsync(User);
-        
+
         if (currentUser?.Role != "Admin")
             return Unauthorized();
 
@@ -471,4 +576,23 @@ public class CreateProductViewModel
     public string Image { get; set; }
     public List<Category> Categories { get; set; } = new();
     public List<Author> Authors { get; set; } = new();
+}
+
+public class CreateUserViewModel
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+    public string Role { get; set; } = "User";
+}
+
+public class EditUserViewModel
+{
+    public Guid Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string Role { get; set; }
+    public bool IsEmailVerified { get; set; }
 }
