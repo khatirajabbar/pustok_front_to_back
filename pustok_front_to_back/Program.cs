@@ -59,6 +59,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseExceptionHandler("/error");
+app.UseStatusCodePagesWithReExecute("/error/{0}");
+
 app.UseRouting();
 
 // IMPORTANT: Order matters! Authentication before Authorization
