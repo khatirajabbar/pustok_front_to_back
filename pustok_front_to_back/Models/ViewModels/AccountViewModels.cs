@@ -1,55 +1,45 @@
 using System.ComponentModel.DataAnnotations;
-using pustok_front_to_back.Models.Entities;
 
 namespace pustok_front_to_back.Models.ViewModels;
 
-public class AdminDashboardViewModel
+public class RegisterViewModel
 {
-    public int TotalProducts { get; set; }
-    public int TotalAuthors { get; set; }
-    public int TotalCategories { get; set; }
-    public int TotalSliders { get; set; }
-    public List<Product> RecentProducts { get; set; } = new();
+    [Required(ErrorMessage = "First name is required")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters")]
+    public string FirstName { get; set; }
+
+    [Required(ErrorMessage = "Last name is required")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters")]
+    public string LastName { get; set; }
+
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email format")]
+    [StringLength(256, ErrorMessage = "Email cannot exceed 256 characters")]
+    public string Email { get; set; }
+
+    [Required(ErrorMessage = "Password is required")]
+    [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 100 characters")]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$", 
+        ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")]
+    public string Password { get; set; }
+
+    [Required(ErrorMessage = "Please confirm your password")]
+    [Compare("Password", ErrorMessage = "Passwords do not match")]
+    public string ConfirmPassword { get; set; }
 }
 
-public class CreateProductViewModel
+public class LoginViewModel
 {
-    public Guid Id { get; set; }
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email format")]
+    public string Email { get; set; }
 
-    [Required(ErrorMessage = "Title is required")]
-    [StringLength(200, MinimumLength = 5, ErrorMessage = "Title must be between 5 and 200 characters")]
-    public string Title { get; set; }
+    [Required(ErrorMessage = "Password is required")]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
 
-    [Required(ErrorMessage = "Description is required")]
-    [StringLength(2000, MinimumLength = 10, ErrorMessage = "Description must be between 10 and 2000 characters")]
-    public string Description { get; set; }
-
-    [Required(ErrorMessage = "Price is required")]
-    [Range(0.01, 999999.99, ErrorMessage = "Price must be between 0.01 and 999999.99")]
-    public decimal Price { get; set; }
-
-    [Required(ErrorMessage = "Category is required")]
-    public Guid CategoryId { get; set; }
-
-    [Required(ErrorMessage = "Author is required")]
-    public Guid AuthorId { get; set; }
-
-    public bool IsOnSale { get; set; }
-
-    [Range(0.01, 999999.99, ErrorMessage = "Sale price must be between 0.01 and 999999.99")]
-    public decimal? SalePrice { get; set; }
-
-    [Required(ErrorMessage = "SKU is required")]
-    [StringLength(50)]
-    public string Sku { get; set; }
-
-    [Required(ErrorMessage = "Stock is required")]
-    [Range(0, 999999, ErrorMessage = "Stock must be between 0 and 999999")]
-    public int Stock { get; set; }
-
-    public string Image { get; set; }
-    public List<Category> Categories { get; set; } = new();
-    public List<Author> Authors { get; set; } = new();
+    [Display(Name = "Remember me?")]
+    public bool RememberMe { get; set; }
 }
 
 public class CreateUserViewModel

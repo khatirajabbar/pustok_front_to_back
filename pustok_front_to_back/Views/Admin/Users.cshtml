@@ -1,8 +1,11 @@
+@using Microsoft.AspNetCore.Identity
 @model List<User>
 
 @{
     ViewData["Title"] = "User Management";
 }
+
+@inject UserManager<User> UserManager
 
 <div class="container mt-5">
     <div class="row">
@@ -45,15 +48,18 @@
                 <tbody>
                     @foreach (var user in Model)
                     {
+                        var userRoles = UserManager.GetRolesAsync(user).Result;
+                        var userRole = userRoles.FirstOrDefault() ?? "User";
+
                         <tr>
                             <td>@user.FirstName</td>
                             <td>@user.LastName</td>
                             <td>@user.Email</td>
                             <td>
-                                <span class="badge bg-info">@user.Role</span>
+                                <span class="badge bg-info">@userRole</span>
                             </td>
                             <td>
-                                @if (user.IsEmailVerified)
+                                @if (user.EmailConfirmed)
                                 {
                                     <span class="badge bg-success">Verified</span>
                                 }
@@ -73,8 +79,8 @@
                                 <form method="post" asp-action="ChangeRole" style="display: inline;">
                                     <input type="hidden" name="userId" value="@user.Id" />
                                     <select name="newRole" class="form-select form-select-sm" style="width: auto; display: inline; margin-right: 5px;">
-                                        <option value="User" selected="@(user.Role == "User")">User</option>
-                                        <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+                                        <option value="User" selected="@(userRole == "User")">User</option>
+                                        <option value="Admin" selected="@(userRole == "Admin")">Admin</option>
                                     </select>
                                     <button type="submit" class="btn btn-sm btn-warning">Change Role</button>
                                 </form>

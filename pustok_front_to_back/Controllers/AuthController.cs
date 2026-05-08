@@ -1,9 +1,9 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using pustok_front_to_back.Models.Entities;
 using pustok_front_to_back.Models.ViewModels;
 using pustok_front_to_back.Services;
-
 namespace pustok_front_to_back.Controllers;
 
 public class AuthController : Controller
@@ -38,8 +38,7 @@ public class AuthController : Controller
             LastName = model.LastName,
             Email = model.Email,
             UserName = model.Email,
-            IsEmailVerified = false,
-            Role = "User"
+            IsEmailVerified = false
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
@@ -86,14 +85,16 @@ public class AuthController : Controller
     }
 
     // Login GET
-    public IActionResult Login()
+    [HttpGet]
+    public IActionResult Login(string returnUrl = null)
     {
+        ViewData["ReturnUrl"] = returnUrl;
         return View();
     }
 
     // Login POST
     [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -109,13 +110,28 @@ public class AuthController : Controller
         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
 
         if (result.Succeeded)
+        {
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
+        }
 
         ModelState.AddModelError("", "Invalid login attempt");
         return View(model);
     }
 
+    // Login with Google - NEW ACTION
+    [HttpGet("login-with-google")]
+    public IActionResult LoginWithGoogle(string returnUrl = null)
+    {
+        var redirectUrl = Url.Action("GoogleResponse", "Auth", new { returnUrl });
+        var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+        return Challenge(properties, "Google");
+    }
+
     // Logout
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
@@ -124,7 +140,7 @@ public class AuthController : Controller
 
     // Google Login Callback
     [HttpGet]
-    public async Task<IActionResult> GoogleResponse()
+    public async Task<IActionResult> GoogleResponse(string returnUrl = null)
     {
         var result = await _signInManager.GetExternalLoginInfoAsync();
         if (result == null)
@@ -133,7 +149,11 @@ public class AuthController : Controller
         var signInResult = await _signInManager.ExternalLoginSignInAsync(result.LoginProvider, result.ProviderKey, false);
         
         if (signInResult.Succeeded)
+        {
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
+        }
 
         // Create new user from Google info
         var user = new User
@@ -143,7 +163,6 @@ public class AuthController : Controller
             Email = result.Principal.FindFirst("email")?.Value,
             UserName = result.Principal.FindFirst("email")?.Value,
             IsEmailVerified = true, // Google verified
-            Role = "User"
         };
 
         var createResult = await _userManager.CreateAsync(user);
@@ -151,6 +170,8 @@ public class AuthController : Controller
         {
             await _userManager.AddLoginAsync(user, result);
             await _signInManager.SignInAsync(user, false);
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
 

@@ -20,7 +20,6 @@ public static class DbInitializer
                 Email = adminEmail,
                 UserName = adminEmail,
                 IsEmailVerified = true,
-                Role = "Admin",
                 CreatedAt = DateTime.Now,
                 IsDeleted = false
             };
@@ -30,6 +29,9 @@ public static class DbInitializer
             {
                 throw new Exception($"Failed to create admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
             }
+
+            // Add admin user to Admin role
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
 
         // Check if database has any data already

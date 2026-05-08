@@ -3,10 +3,10 @@ using pustok_front_to_back.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using pustok_front_to_back.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
-
+using pustok_front_to_back.Models.ViewModels;
 namespace pustok_front_to_back.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly IProductService _productService;
@@ -47,7 +47,7 @@ public class AdminController : Controller
             TotalCategories = totalCategories,
             TotalSliders = totalSliders,
             RecentProducts = (await _productService.GetAllProductsAsync()).OrderByDescending(p => p.CreatedAt).Take(5).ToList()
-        };
+        };        
 
         return View(model);
     }
@@ -396,33 +396,18 @@ public class AdminController : Controller
 
     public async Task<IActionResult> Users()
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (currentUser?.Role != "Admin")
-            return Unauthorized();
-
         var allUsers = _userManager.Users.Where(u => !u.IsDeleted).ToList();
         return View(allUsers);
     }
 
-    public async Task<IActionResult> CreateUser()
+    public IActionResult CreateUser()
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (currentUser?.Role != "Admin")
-            return Unauthorized();
-
         return View();
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateUser(CreateUserViewModel model)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (currentUser?.Role != "Admin")
-            return Unauthorized();
-
         if (!ModelState.IsValid)
             return View(model);
 
@@ -433,7 +418,6 @@ public class AdminController : Controller
             Email = model.Email,
             UserName = model.Email,
             IsEmailVerified = true,
-            Role = model.Role,
             CreatedAt = DateTime.Now,
             IsDeleted = false
         };
@@ -442,6 +426,8 @@ public class AdminController : Controller
 
         if (result.Succeeded)
         {
+            // Add user to the specified role
+            await _userManager.AddToRoleAsync(user, model.Role);
             TempData["Success"] = "User created successfully!";
             return RedirectToAction(nameof(Users));
         }
@@ -454,14 +440,11 @@ public class AdminController : Controller
 
     public async Task<IActionResult> EditUser(Guid id)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (currentUser?.Role != "Admin")
-            return Unauthorized();
-
         var user = await _userManager.FindByIdAsync(id.ToString());
         if (user == null)
             return NotFound();
+
+        var userRoles = await _userManager.GetRolesAsync(user);
 
         var model = new EditUserViewModel
         {
@@ -469,8 +452,8 @@ public class AdminController : Controller
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
-            Role = user.Role,
-            IsEmailVerified = user.IsEmailVerified
+            Role = userRoles.FirstOrDefault() ?? "User",
+            IsEmailVerified = user.EmailConfirmed
         };
 
         return View(model);
@@ -479,11 +462,6 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> EditUser(EditUserViewModel model)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (currentUser?.Role != "Admin")
-            return Unauthorized();
-
         if (!ModelState.IsValid)
             return View(model);
 
@@ -495,13 +473,17 @@ public class AdminController : Controller
         user.LastName = model.LastName;
         user.Email = model.Email;
         user.UserName = model.Email;
-        user.Role = model.Role;
-        user.IsEmailVerified = model.IsEmailVerified;
+        user.EmailConfirmed = model.IsEmailVerified;
 
         var result = await _userManager.UpdateAsync(user);
 
         if (result.Succeeded)
         {
+            // Update user roles
+            var userRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, userRoles);
+            await _userManager.AddToRoleAsync(user, model.Role);
+
             TempData["Success"] = "User updated successfully!";
             return RedirectToAction(nameof(Users));
         }
@@ -515,11 +497,6 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteUser(Guid userId)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (currentUser?.Role != "Admin")
-            return Unauthorized();
-
         var userToDelete = await _userManager.FindByIdAsync(userId.ToString());
         if (userToDelete == null)
             return NotFound();
@@ -534,65 +511,18 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> ChangeRole(Guid userId, string newRole)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (currentUser?.Role != "Admin")
-            return Unauthorized();
-
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
             return NotFound();
 
-        user.Role = newRole; // "User" or "Admin"
-        await _userManager.UpdateAsync(user);
+        // Remove existing roles
+        var userRoles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+        // Add new role
+        await _userManager.AddToRoleAsync(user, newRole);
 
         TempData["Success"] = $"User role changed to {newRole}";
         return RedirectToAction("Users");
     }
-}
-
-// VIEW MODELS
-public class AdminDashboardViewModel
-{
-    public int TotalProducts { get; set; }
-    public int TotalAuthors { get; set; }
-    public int TotalCategories { get; set; }
-    public int TotalSliders { get; set; }
-    public List<Product> RecentProducts { get; set; } = new();
-}
-
-public class CreateProductViewModel
-{
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public decimal Price { get; set; }
-    public Guid CategoryId { get; set; }
-    public Guid AuthorId { get; set; }
-    public bool IsOnSale { get; set; }
-    public decimal? SalePrice { get; set; }
-    public string Sku { get; set; }
-    public int Stock { get; set; }
-    public string Image { get; set; }
-    public List<Category> Categories { get; set; } = new();
-    public List<Author> Authors { get; set; } = new();
-}
-
-public class CreateUserViewModel
-{
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string Role { get; set; } = "User";
-}
-
-public class EditUserViewModel
-{
-    public Guid Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string Role { get; set; }
-    public bool IsEmailVerified { get; set; }
 }
